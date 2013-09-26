@@ -57,6 +57,10 @@ function SoundManager(smURL, smID) {
   this.setupOptions = {
 
     'url': (smURL || null),             // path (directory) where SoundManager 2 SWFs exist, eg., /path/to/swfs/
+    'swfMain': 'soundmanager2.swf',
+    'swfDebug': 'soundmanager2_debug.swf',
+    'swfFlash9': 'soundmanager2_flash9.swf',
+    'swfFlash9Debug': 'soundmanager2_flash9_debug.swf',
     'flashVersion': 8,                  // flash build to use (8 or 9.) Some API features require 9.
     'debugMode': true,                  // enable debugging output (console.log() with HTML fallback)
     'debugFlash': false,                // enable debugging output inside SWF, troubleshoot Flash/browser issues
@@ -4384,7 +4388,7 @@ function SoundManager(smURL, smID) {
 
     // debug flash movie, if applicable
 
-    var isDebug = (sm2.debugMode || sm2.debugFlash?'_debug.swf':'.swf');
+    var isDebug = (sm2.debugMode || sm2.debugFlash);
 
     if (sm2.useHTML5Audio && !sm2.html5Only && sm2.audioFormats.mp4.required && fV < 9) {
       sm2._wD(str('needfl9'));
@@ -4410,7 +4414,12 @@ function SoundManager(smURL, smID) {
     sm2.filePattern = sm2.filePatterns[(fV !== 8?'flash9':'flash8')];
 
     // if applicable, use _debug versions of SWFs
-    sm2.movieURL = (fV === 8?'soundmanager2.swf':'soundmanager2_flash9.swf').replace('.swf', isDebug);
+    if (fV === 8) {
+      sm2.movieURL = isDebug ? sm2.swfDebug : sm2.swfMain;
+    } else {
+      sm2.movieURL = isDebug ? sm2.swfFlash9Debug : sm2.swfFlash9;
+    }
+    
 
     sm2.features.peakData = sm2.features.waveformData = sm2.features.eqData = (fV > 8);
 
